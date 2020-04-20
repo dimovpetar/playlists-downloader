@@ -1,0 +1,21 @@
+.log ul {
+	list-style: none;
+}
+
+.type-error {
+	color: red;
+}
+
+.type-success {
+	color: green;
+}
+
+.type-skip {
+	color: grey;
+}
+
+.type-playlist {
+	text-decoration: underline;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+}

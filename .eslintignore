@@ -1,0 +1,4 @@
+node_modules
+
+# ignore folder containing built version
+dist
