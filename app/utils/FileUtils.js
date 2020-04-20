@@ -31,7 +31,7 @@ const readdir = (name) => {
 };
 
 const unlink = (name) => {
-	return fsp.unlink(getFullPath(name));
+	return fsp.unlink(name);
 };
 
 module.exports = {

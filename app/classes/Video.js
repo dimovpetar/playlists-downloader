@@ -4,11 +4,12 @@ const Ffmpeg = require("fluent-ffmpeg");
 const Log = require("./Log");
 const { hmsToSecondsOnly } = require("../utils/TimeUtils");
 const { fileExists } = require("../utils/FileUtils");
+const translitbg = require("translitbg");
 
 class Video {
 	constructor(id, name) {
 		this.id = id;
-		this.fileName = sanitize(name + ".mp3", { replacement: "_" });
+		this.fileName = translitbg.go(sanitize(name + ".mp3", { replacement: "_" }));
 		this.url = `https://www.youtube.com/watch?v=${id}`;
 	};
 
