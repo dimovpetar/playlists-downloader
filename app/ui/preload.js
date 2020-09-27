@@ -4,12 +4,12 @@ function submit(event) {
 	event.preventDefault();
 
 	const youtubeApiKey = document.getElementById("apiKey").value;
-	const channelId = document.getElementById("channelId").value;
+	const youtubeChannelId = document.getElementById("channelId").value;
 
-	if (youtubeApiKey && channelId) {
+	if (youtubeApiKey && youtubeChannelId) {
 		ipcRenderer.send("start", {
 			youtubeApiKey,
-			channelId
+			youtubeChannelId
 		});
 		messageStrip.innerText = "";
 	} else {
@@ -53,7 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
 	form.addEventListener("submit", submit);
 
 	ipcRenderer.once("prefillSettings", (event, data) => {
-		document.getElementById("channelId").value = data.channelId;
+		document.getElementById("channelId").value = data.youtubeChannelId;
 		document.getElementById("apiKey").value = data.youtubeApiKey;
 		messageStrip.innerText = `Found settings at ${data.settingsPath}`;
 	});

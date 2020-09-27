@@ -23,7 +23,7 @@ async function start() {
 		return;
 	}
 
-	const channel = new Channel(Config.channelId, downloadsDir);
+	const channel = new Channel(Config.youtubeChannelId, downloadsDir);
 	await channel.init();
 
 	const downloadPlaylist = async playlist => {
@@ -83,12 +83,12 @@ ipcMain.on("start", async (event, args) => {
 });
 
 ipcMain.once("UILoaded", async (event) => {
-	const haveSettings = await Config.checkForSavedSettings();
+	const settings = await Config.checkForSavedSettings();
 
-	if (haveSettings) {
+	if (settings) {
 		BrowserWindowInstance.get().webContents.send("prefillSettings", {
-			channelId: Config.channelId,
-			youtubeApiKey: Config.youtubeApiKey,
+			youtubeChannelId: settings.youtubeChannelId,
+			youtubeApiKey: settings.youtubeApiKey,
 			settingsPath: Config.settingsPath
 		});
 	}
