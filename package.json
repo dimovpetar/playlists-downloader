@@ -25,11 +25,11 @@
   "author": "Petar Dimov",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^8.2.3",
-    "electron-builder": "^22.5.1",
+    "electron": "^8.5.2",
+    "electron-builder": "^22.8.1",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1"
@@ -40,7 +40,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^49.0.0",
     "sanitize-filename": "^1.6.3",
-    "translitbg": "^1.1.0",
-    "ytdl-core": "^3.2.2"
+    "translitbg": "^1.2.0",
+    "ytdl-core": "^3.3.0"
   }
 }
