@@ -1,8 +1,14 @@
 const { google } = require("googleapis");
-const vars = require("./config/vars");
-const youtube = google.youtube({
-	version: "v3",
-	auth: vars.youtube_api_key
-});
+const Config = require("./config/Config");
 
-module.exports = youtube;
+const init = async () => {
+	await Config.init();
+	return google.youtube({
+		version: "v3",
+		auth: Config.youtubeApiKey
+	});
+};
+
+module.exports = {
+	init
+};

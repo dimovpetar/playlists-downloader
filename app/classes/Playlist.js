@@ -1,6 +1,6 @@
 const async = require("async");
 const Video = require("./Video");
-const youtube = require("../youtube");
+const { init } = require("../youtube");
 const Log = require("./Log");
 const { createDirIfDoesntExist, readdir, unlink } = require("../utils/FileUtils");
 
@@ -32,6 +32,7 @@ class Playlist {
 		let nextPageToken = null;
 
 		do {
+			const youtube = await init();
 			const { data } = await youtube.playlistItems.list({
 				playlistId: this.id,
 				part: "snippet,contentDetails",

@@ -1,9 +1,31 @@
 const ipcRenderer = require("electron").ipcRenderer;
 
+function submit(event) {
+	event.preventDefault();
+
+	const youtubeApiKey = document.getElementById("apiKey").value;
+	const channelId = document.getElementById("channelId").value;
+
+	if (youtubeApiKey && channelId) {
+		ipcRenderer.send("start", {
+			youtubeApiKey,
+			channelId
+		});
+		messageStrip.innerText = "";
+	} else {
+		messageStrip.innerText = "Fill inputs first!";
+	}
+}
+
 /**
  * @type {HTMLElement}
  */
 let messagesUL = null;
+
+/**
+ * @type {HTMLElement}
+ */
+let messageStrip = null;
 
 const updateUI = (event, messages) => {
 	messages.forEach(([key, { msg, type }]) => {
@@ -25,16 +47,17 @@ const updateUI = (event, messages) => {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-	const btn = document.getElementById("start");
 	messagesUL = document.getElementById("messages");
+	messageStrip = document.getElementById("messageStrip");
+	const form = document.getElementById("form");
+	form.addEventListener("submit", submit);
 
-	btn.addEventListener("click", () => {
-		ipcRenderer.send("start");
+	ipcRenderer.once("prefillSettings", (event, data) => {
+		document.getElementById("channelId").value = data.channelId;
+		document.getElementById("apiKey").value = data.youtubeApiKey;
+		messageStrip.innerText = `Found settings at ${data.settingsPath}`;
 	});
-
-	ipcRenderer.on("btnclick-task-finished", function(event, param) {
-
-	});
-
+	ipcRenderer.send("UILoaded");
+	ipcRenderer.on("btnclick-task-finished", function(event, param) {});
 	ipcRenderer.on("updateUI", updateUI);
 });

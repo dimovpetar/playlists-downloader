@@ -4,19 +4,21 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Playlists Downloader</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
 	<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
 	<link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 
 <body>
 	<main class="content-wraper" id="content-wraper">
-		<div class="form">
-			<span>CHANNEL ID:</span>
-			<input placeholder="Channel ID...">
-			<button id="start">START</button>
-		</div>
+		<form id="form">
+			<label for="channelId">CHANNEL ID:</label><br>
+			<input type="text" id="channelId" name="channelId"><br>
+			<label for="apiKey">YOUTUBE API KEY:</label><br>
+			<input type="text" id="apiKey" name="apiKey"><br><br>
+			<input type="submit" value="Start">
+		</form>
+		<div id="messageStrip"></div>
 		<div class="log">
 			<ul id="messages"></ul>
 		</div>

@@ -1,6 +1,6 @@
 
 const Playlist = require("./Playlist");
-const youtube = require("../youtube");
+const { init } = require("../youtube");
 
 class Channel {
 	constructor (id, dir) {
@@ -11,6 +11,7 @@ class Channel {
 	}
 
 	async init() {
+		const youtube = await init();
 		const { data: { items: playlists } } = await youtube.playlists.list({
 			channelId: this.id,
 			part: "id,snippet"

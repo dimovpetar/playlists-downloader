@@ -5,7 +5,7 @@ const BrowserWindowInstance = require("./BrowserWindowInstance");
 const { ipcMain } = require("electron");
 const Log = require("./classes/Log");
 const { createDirIfDoesntExist, getFullPath } = require("./utils/FileUtils");
-const vars = require("./config/vars");
+const Config = require("./config/Config");
 
 async function start() {
 	const downloadsDir = getFullPath("media");
@@ -23,7 +23,7 @@ async function start() {
 		return;
 	}
 
-	const channel = new Channel(vars.youtube_channel_id, downloadsDir);
+	const channel = new Channel(Config.channelId, downloadsDir);
 	await channel.init();
 
 	const downloadPlaylist = async playlist => {
@@ -76,7 +76,20 @@ Log.addListener("playlist", (...args) => {
 	handleMessage("playlist", ...args);
 });
 
-ipcMain.on("start", function (event, arg) {
+ipcMain.on("start", async (event, args) => {
+	await Config.init(args);
 	start();
 	event.sender.send("btnclick-task-finished", "yes");
+});
+
+ipcMain.once("UILoaded", async (event) => {
+	const haveSettings = await Config.checkForSavedSettings();
+
+	if (haveSettings) {
+		BrowserWindowInstance.get().webContents.send("prefillSettings", {
+			channelId: Config.channelId,
+			youtubeApiKey: Config.youtubeApiKey,
+			settingsPath: Config.settingsPath
+		});
+	}
 });

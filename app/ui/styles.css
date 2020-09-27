@@ -1,3 +1,11 @@
+form {
+	margin-left: 2.5rem;
+}
+
+input {
+	width: 320px;
+}
+
 .log ul {
 	list-style: none;
 }
