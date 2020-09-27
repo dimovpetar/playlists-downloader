@@ -1,9 +1,10 @@
 const sanitize = require("sanitize-filename");
 const ytdl = require("ytdl-core");
 const Ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const Log = require("./Log");
 const { hmsToSecondsOnly } = require("../utils/TimeUtils");
-const { fileExists } = require("../utils/FileUtils");
+const { fileExists, unlink } = require("../utils/FileUtils");
 const translitbg = require("translitbg");
 
 class Video {
@@ -11,11 +12,13 @@ class Video {
 		this.id = id;
 		this.fileName = translitbg.go(sanitize(name + ".mp3", { replacement: "_" }));
 		this.url = `https://www.youtube.com/watch?v=${id}`;
+		this.length = 0;
 	};
 
 	async download(dir) {
 		const fullfileName = `${dir}/${this.fileName}`;
 		const exists = await fileExists(fullfileName);
+
 		if (exists) {
 			Log.skip({
 				initiator: this.id,
@@ -25,23 +28,27 @@ class Video {
 		}
 
 		await new Promise((resolve, reject) => {
-			let length = 0;
 			const stream = ytdl(this.url, {
 				format: "mp4"
 			}).on("info", (e) => {
-				length = e.length_seconds;
+				this.length = parseFloat(e.videoDetails.lengthSeconds);
 			});
 
-			const proc = new Ffmpeg({ source: stream });
-			proc.setFfmpegPath("/usr/bin/ffmpeg");
+			let currLength = 0;
+			const proc = new Ffmpeg({
+				source: stream,
+				timeout: 60
+			});
+			proc.setFfmpegPath(ffmpegPath);
+
 			proc.on("start", (commandLine) => {
 				Log.download({
 					initiator: this.id,
 					msg: `[DOWNLOAD] ${this.fileName} 0%`
 				});
 			}).on("progress", e => {
-				const current = hmsToSecondsOnly(e.timemark);
-				const percents = Math.round(current * 100 / length);
+				currLength = hmsToSecondsOnly(e.timemark);
+				const percents = Math.round(currLength * 100 / this.length);
 				Log.download({
 					initiator: this.id,
 					msg: `[DOWNLOAD] ${this.fileName} ${percents}%`
@@ -51,7 +58,13 @@ class Video {
 					initiator: this.id,
 					msg: `[ERROR]: Downloading ${this.fileName} failed. ${err}`
 				});
-				reject(err);
+				unlink(fullfileName)
+					.then(() => {
+						reject(err);
+					})
+					.catch((_err) => {
+						reject(err);
+					});
 			}).on("end", () => {
 				Log.success({
 					initiator: this.id,
