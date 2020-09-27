@@ -1,7 +1,9 @@
 const sanitize = require("sanitize-filename");
 const ytdl = require("ytdl-core");
 const Ffmpeg = require("fluent-ffmpeg");
-const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+let ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+// electron know issue
+ffmpegPath = ffmpegPath.replace("app.asar", "app.asar.unpacked");
 const Log = require("./Log");
 const { hmsToSecondsOnly } = require("../utils/TimeUtils");
 const { fileExists, unlink } = require("../utils/FileUtils");
