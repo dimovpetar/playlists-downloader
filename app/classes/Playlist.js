@@ -53,7 +53,7 @@ class Playlist {
 		} while (nextPageToken);
 
 		this.videos = videos.map(video => {
-			return new Video(video.snippet.resourceId.videoId, video.snippet.title);
+			return new Video(video.snippet.resourceId.videoId, video.snippet.position + "_" + video.snippet.title);
 		});
 	}
 
@@ -105,7 +105,7 @@ class Playlist {
 			if (!videosInPlaylist.includes(file)) {
 				await unlink(`${this.playlistDir}/${file}`);
 				Log.success({
-					initiator: this.id,
+					initiator: this.id + file,
 					msg: `[DELETE] ${file}. The song doesn't occur in the playlist anymore.`
 				});
 			}
@@ -115,7 +115,7 @@ class Playlist {
 			async.map(filesInDir, deleteFileIfDoesntExist, (err, res) => {
 				if (err) {
 					Log.error({
-						initiator: this.id,
+						initiator: this.id + err.message, // find better id
 						msg: `[ERROR] Problem when deleting. ${err}.`
 					});
 					reject(err);
