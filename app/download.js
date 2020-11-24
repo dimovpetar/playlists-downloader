@@ -10,11 +10,18 @@ const Config = require("./config/Config");
 async function start() {
 	const downloadsDir = getFullPath("media");
 	try {
-		await createDirIfDoesntExist(downloadsDir);
-		Log.success({
-			initiator: "init",
-			msg: `[SUCCESS] Created directory: ${downloadsDir}`
-		});
+		const newDirCreated = await createDirIfDoesntExist(downloadsDir);
+		if (newDirCreated) {
+			Log.success({
+				initiator: "init",
+				msg: `[SUCCESS] Created directory: ${downloadsDir}`
+			});
+		} else {
+			Log.skip({
+				initiator: this.id + "-1",
+				msg: `[SKIP] Directory: ${downloadsDir} already exists.`
+			});
+		}
 	} catch (err) {
 		Log.error({
 			initiator: "init",

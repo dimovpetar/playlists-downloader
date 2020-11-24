@@ -39,7 +39,7 @@ class Video {
 			let currLength = 0;
 			const proc = new Ffmpeg({
 				source: stream,
-				timeout: 60
+				timeout: 600
 			});
 			proc.setFfmpegPath(ffmpegPath);
 
@@ -62,10 +62,10 @@ class Video {
 				});
 				unlink(fullfileName)
 					.then(() => {
-						reject(err);
+						resolve();
 					})
 					.catch((_err) => {
-						reject(err);
+						resolve();
 					});
 			}).on("end", () => {
 				Log.success({

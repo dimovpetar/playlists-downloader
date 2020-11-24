@@ -7,9 +7,11 @@ const fsp = fs.promises;
 const createDirIfDoesntExist = async (dir) => {
 	try {
 		await fsp.access(dir, fs.constants.F_OK);
+		return false;
 	} catch (err) {
 		// dir doesn't exist
 		await fsp.mkdir(dir);
+		return true;
 	}
 };
 

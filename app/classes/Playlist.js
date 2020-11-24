@@ -15,11 +15,18 @@ class Playlist {
 
 	async init() {
 		try {
-			await createDirIfDoesntExist(this.playlistDir);
-			Log.success({
-				initiator: this.id + "-1",
-				msg: `[SUCCESS] Created directory: ${this.playlistDir}.`
-			});
+			const newDirCreated = await createDirIfDoesntExist(this.playlistDir);
+			if (newDirCreated) {
+				Log.success({
+					initiator: this.id + "-1",
+					msg: `[SUCCESS] Created directory: ${this.playlistDir}.`
+				});
+			} else {
+				Log.skip({
+					initiator: this.id + "-1",
+					msg: `[SKIP] Directory: ${this.playlistDir} already exists.`
+				});
+			}
 		} catch (err) {
 			Log.error({
 				initiator: this.id + "-1",
@@ -68,13 +75,13 @@ class Playlist {
 						initiator: this.id + "-3",
 						msg: `[ERROR] Downloading playlist ${this.title} failed. ${err}`
 					});
-					return reject(err);
+				} else {
+					Log.success({
+						initiator: this.id + "-3",
+						msg: `[SUCCESS] Downloading playlist ${this.title} completed.\n`
+					});
 				}
 
-				Log.success({
-					initiator: this.id + "-3",
-					msg: `[SUCCESS] Downloading playlist ${this.title} completed.\n`
-				});
 				resolve();
 			});
 		});
